@@ -1,45 +1,13 @@
 #include "app/dsl_app.h"
-#include "components/components.h"
+#include "gui/dhquant_dashboard_layout.h"
+#include "gui/dhquant_dashboard_navigation.h"
+#include "gui/dhquant_dashboard_overlays.h"
+#include "gui/dhquant_dashboard_state.h"
+#include "gui/dhquant_dashboard_theme.h"
+#include "gui/dhquant_dashboard_topbar.h"
+#include "gui/dhquant_dashboard_workspace.h"
 
 namespace app {
-namespace {
-
-components::theme::ThemeColorTokens dashboardTheme() {
-    auto tokens = components::theme::DarkThemeColors();
-    tokens.background = {0.045f, 0.052f, 0.060f, 1.0f};
-    tokens.surface = {0.070f, 0.082f, 0.094f, 1.0f};
-    tokens.surfaceHover = {0.100f, 0.116f, 0.132f, 1.0f};
-    tokens.surfaceActive = {0.120f, 0.150f, 0.158f, 1.0f};
-    tokens.primary = {0.180f, 0.620f, 0.520f, 1.0f};
-    tokens.border = {0.180f, 0.220f, 0.245f, 1.0f};
-    tokens.text = {0.900f, 0.940f, 0.935f, 1.0f};
-    return tokens;
-}
-
-void statusLine(core::dsl::Ui& ui, const components::theme::ThemeColorTokens& tokens) {
-    ui.row("dhq.p0.status")
-        .x(48.0f)
-        .y(152.0f)
-        .size(720.0f, 36.0f)
-        .gap(10.0f)
-        .alignItems(core::Align::CENTER)
-        .content([&] {
-            ui.rect("dhq.p0.status.dot")
-                .size(10.0f, 10.0f)
-                .radius(5.0f)
-                .color(tokens.primary)
-                .build();
-
-            components::text(ui, "dhq.p0.status.text", tokens)
-                .text("P0 shell compiled. Dashboard workspace is ready for P1.")
-                .fontSize(17.0f)
-                .color({0.660f, 0.740f, 0.735f, 1.0f})
-                .build();
-        })
-        .build();
-}
-
-} // namespace
 
 const DslAppConfig& dslAppConfig() {
     static const DslAppConfig config = DslAppConfig{}
@@ -54,7 +22,13 @@ const DslAppConfig& dslAppConfig() {
 }
 
 void compose(core::dsl::Ui& ui, const core::dsl::Screen& screen) {
-    const auto tokens = dashboardTheme();
+    const auto tokens = dashboard::dashboardTheme();
+    const float activeSidebarWidth = dashboard::state().sidebarCollapsed
+        ? dashboard::layout::kSidebarCollapsedWidth
+        : dashboard::layout::kSidebarWidth;
+    const float mainWidth = screen.width - activeSidebarWidth;
+    const float workspaceHeight = screen.height - dashboard::layout::kTopbarHeight;
+    const core::dsl::Screen mainScreen{mainWidth, screen.height};
 
     ui.stack("dhq.root")
         .size(screen.width, screen.height)
@@ -64,35 +38,18 @@ void compose(core::dsl::Ui& ui, const core::dsl::Screen& screen) {
                 .color(tokens.background)
                 .build();
 
-            ui.rect("dhq.p0.panel")
-                .x(32.0f)
-                .y(32.0f)
-                .size(760.0f, 204.0f)
-                .radius(10.0f)
-                .color(tokens.surface)
-                .border(1.0f, {0.160f, 0.205f, 0.220f, 1.0f})
-                .build();
+            dashboard::renderSidebar(ui, tokens, screen.height);
 
-            components::text(ui, "dhq.p0.eyebrow", tokens)
-                .x(48.0f)
-                .y(54.0f)
-                .size(520.0f, 24.0f)
-                .text("DHQUANT GUI / EUI-NEO SDK")
-                .fontSize(13.0f)
-                .color(tokens.primary)
+            ui.stack("dhq.main")
+                .x(activeSidebarWidth)
+                .y(0.0f)
+                .size(mainWidth, screen.height)
+                .content([&] {
+                    dashboard::renderTopbar(ui, tokens, mainWidth);
+                    dashboard::renderWorkspace(ui, tokens, mainWidth, workspaceHeight);
+                    dashboard::renderOverlays(ui, tokens, mainScreen);
+                })
                 .build();
-
-            components::text(ui, "dhq.p0.title", tokens)
-                .x(48.0f)
-                .y(86.0f)
-                .size(680.0f, 48.0f)
-                .text("DhQuant Dashboard")
-                .fontSize(34.0f)
-                .fontWeight(700)
-                .color(tokens.text)
-                .build();
-
-            statusLine(ui, tokens);
         })
         .build();
 }

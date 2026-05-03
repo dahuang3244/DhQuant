@@ -58,7 +58,7 @@ public:
     void build() {
         const float width = std::min(width_, std::max(0.0f, screenWidth_ - 32.0f));
         const float height = std::min(height_, std::max(0.0f, screenHeight_ - 32.0f));
-        const float x = std::max(16.0f, screenWidth_ - width - 28.0f);
+        const float x = std::max(16.0f, screenWidth_ - width);
         const float y = std::max(16.0f, screenHeight_ - height - 28.0f);
         const float iconSize = 22.0f;
         const float textX = 54.0f;
@@ -170,8 +170,8 @@ private:
     bool visible_ = false;
     float screenWidth_ = 800.0f;
     float screenHeight_ = 600.0f;
-    float width_ = 360.0f;
-    float height_ = 88.0f;
+    float width_ = 420.0f;
+    float height_ = 112.0f;
     float autoDismissSeconds_ = 0.0f;
     int zIndex_ = 1100;
 };

@@ -1,3 +1,6 @@
 /docs
 /build
 /.vscode
+/.cache
+/bd.sh
+/run.sh

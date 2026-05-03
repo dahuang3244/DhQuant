@@ -111,6 +111,8 @@ public:
         iconColor.a *= style_.opacity;
 
         ui_.stack(id_)
+            .x(translateX_)
+            .y(translateY_)
             .size(w, h)
             .visualStateFrom(id_ + ".bg", style_.pressScale)
             .content([&] {
@@ -121,7 +123,6 @@ public:
                     .opacity(style_.opacity)
                     .border(border)
                     .shadow(shadow)
-                    .translate(translateX_, translateY_)
                     .transition(transition_)
                     .disabled(disabled_)
                     .onClick(onClick_)
