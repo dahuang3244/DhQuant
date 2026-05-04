@@ -1,0 +1,7 @@
+module components
+singleton Theme 1.0 Theme.qml
+Sidebar 1.0 Sidebar.qml
+Topbar 1.0 Topbar.qml
+Toast 1.0 Toast.qml
+CandlestickChart 1.0 CandlestickChart.qml
+VolumeChart 1.0 VolumeChart.qml
