@@ -14,6 +14,11 @@ from core.models import (
 )
 
 
+TIME_FRAMES = ("分钟", "小时", "日", "月", "年")
+PREDICTION_UNITS = ("分钟", "小时", "天")
+MAX_PREDICTION_DAYS = 30
+
+
 def generate_quotes(market: str, mode: str, query: str) -> list[QuoteRow]:
     market_kind = MarketKind(market)
     if mode == SearchMode.SYMBOL.value:
@@ -36,7 +41,7 @@ def generate_quotes(market: str, mode: str, query: str) -> list[QuoteRow]:
         base = 90.0 + index * 42.0 + rnd.random() * 25.0
         if market_kind == MarketKind.CRYPTO:
             base *= 120.0
-        bars = _bars(base, rnd)
+        bars = _bars(base, rnd, "分钟", 72)
         last = bars[-1].close
         prev = bars[-2].close
         change = (last - prev) / prev * 100.0
@@ -54,11 +59,86 @@ def generate_quotes(market: str, mode: str, query: str) -> list[QuoteRow]:
                 turnover=turnover,
                 update_time="14:35:20",
                 bars=bars,
+                time_frame="分钟",
+                custom_count=72,
+                prediction_unit="天",
+                prediction_amount=1,
+                forecast=[],
+                forecast_start_index=len(bars),
                 technical=_technical(bars),
                 fundamental=_fundamental(index, last),
                 timing=_timing(index, change),
             )
         )
+    return rows
+
+
+def generate_bars(
+    base: float,
+    symbol: str,
+    time_frame: str,
+    custom_count: int = 72,
+) -> list[OhlcvBar]:
+    frame = time_frame if time_frame in TIME_FRAMES else "分钟"
+    count = max(6, min(6000, custom_count))
+    seed = abs(hash(("bars", symbol, frame, count))) % 10_000
+    rnd = random.Random(seed)
+    return _bars(base, rnd, frame, count)
+
+
+def normalize_prediction_amount(unit: str, amount: int) -> int:
+    value = max(1, amount)
+    if unit == "分钟":
+        return min(MAX_PREDICTION_DAYS * 24 * 60, value)
+    if unit == "小时":
+        return min(MAX_PREDICTION_DAYS * 24, value)
+    return min(MAX_PREDICTION_DAYS, value)
+
+
+def technical_for_bars(bars: list[OhlcvBar]) -> TechnicalIndicators:
+    return _technical(bars)
+
+
+def generate_prediction(
+    bars: list[OhlcvBar],
+    symbol: str,
+    unit: str,
+    amount: int,
+) -> list[OhlcvBar]:
+    if not bars:
+        return []
+
+    horizon_unit = unit if unit in PREDICTION_UNITS else "天"
+    horizon_amount = normalize_prediction_amount(horizon_unit, amount)
+    points = _prediction_points(horizon_unit, horizon_amount)
+    seed = abs(hash(("kronos", symbol, horizon_unit, horizon_amount, bars[-1].close))) % 10_000
+    rnd = random.Random(seed)
+    closes = [bar.close for bar in bars]
+    short_ma = _sma(closes, min(8, len(closes)))
+    long_ma = _sma(closes, min(28, len(closes)))
+    trend = (short_ma - long_ma) / max(1.0, points)
+    volatility = max(0.08, sum(abs(closes[i] - closes[i - 1]) for i in range(1, len(closes))) / max(1, len(closes) - 1))
+
+    rows: list[OhlcvBar] = []
+    price = bars[-1].close
+    for i in range(points):
+        wave = math.sin((i + 1) / 3.2) * volatility * 0.22
+        drift = trend * 0.55 + wave + rnd.uniform(-volatility * 0.18, volatility * 0.18)
+        open_price = price
+        close = max(0.5, open_price + drift)
+        high = max(open_price, close) + volatility * rnd.uniform(0.15, 0.55)
+        low = min(open_price, close) - volatility * rnd.uniform(0.15, 0.55)
+        rows.append(
+            OhlcvBar(
+                time=_prediction_label(horizon_unit, horizon_amount, i, points),
+                open=open_price,
+                high=high,
+                low=max(0.5, low),
+                close=close,
+                volume=bars[-1].volume,
+            )
+        )
+        price = close
     return rows
 
 
@@ -82,11 +162,12 @@ def _market_label(market: MarketKind) -> str:
     }[market]
 
 
-def _bars(base: float, rnd: random.Random) -> list[OhlcvBar]:
+def _bars(base: float, rnd: random.Random, time_frame: str, count: int) -> list[OhlcvBar]:
     now = datetime(2026, 5, 3, 14, 35)
     rows: list[OhlcvBar] = []
     price = base
-    for i in range(72):
+    bar_count, step, label_format = _bar_profile(time_frame, count)
+    for i in range(bar_count):
         drift = math.sin(i / 7.0) * 0.45 + rnd.uniform(-0.55, 0.75)
         open_price = price
         close = max(1.0, open_price + drift)
@@ -95,7 +176,7 @@ def _bars(base: float, rnd: random.Random) -> list[OhlcvBar]:
         volume = 850_000 + i * 13_000 + rnd.random() * 480_000
         rows.append(
             OhlcvBar(
-                time=(now - timedelta(minutes=(71 - i) * 5)).strftime("%H:%M"),
+                time=_format_bar_time(now - step * (bar_count - 1 - i), label_format),
                 open=open_price,
                 high=high,
                 low=max(0.5, low),
@@ -105,6 +186,37 @@ def _bars(base: float, rnd: random.Random) -> list[OhlcvBar]:
         )
         price = close
     return rows
+
+
+def _bar_profile(time_frame: str, count: int) -> tuple[int, timedelta, str]:
+    safe = max(6, min(6000, count))
+    if time_frame == "小时":
+        return safe, timedelta(hours=1), "%m-%d %H时"
+    if time_frame == "日":
+        return safe, timedelta(days=1), "%m-%d"
+    if time_frame == "月":
+        return safe, timedelta(days=30), "%Y-%m"
+    if time_frame == "年":
+        return min(600, safe), timedelta(days=365), "%Y"
+    return safe, timedelta(minutes=5), "%H:%M"
+
+
+def _format_bar_time(value: datetime, label_format: str) -> str:
+    return value.strftime(label_format)
+
+
+def _prediction_points(unit: str, amount: int) -> int:
+    if unit == "分钟":
+        return min(96, max(6, amount))
+    if unit == "小时":
+        return min(96, max(6, amount * 2))
+    return min(96, max(6, amount * 4))
+
+
+def _prediction_label(unit: str, amount: int, index: int, points: int) -> str:
+    value = max(1, round((index + 1) * amount / max(1, points)))
+    suffix = {"分钟": "m", "小时": "h", "天": "d"}[unit]
+    return f"+{value}{suffix}"
 
 
 def _sma(values: list[float], window: int) -> float:

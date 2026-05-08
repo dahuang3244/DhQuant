@@ -76,6 +76,12 @@ class QuoteRow:
     turnover: float
     update_time: str
     bars: list[OhlcvBar] = field(default_factory=list)
+    time_frame: str = "分钟"
+    custom_count: int = 72
+    prediction_unit: str = "天"
+    prediction_amount: int = 1
+    forecast: list[OhlcvBar] = field(default_factory=list)
+    forecast_start_index: int = 0
     technical: TechnicalIndicators | None = None
     fundamental: FundamentalIndicators | None = None
     timing: TimingIndicators | None = None
@@ -93,6 +99,12 @@ class QuoteRow:
             "turnover": compact_money(self.turnover),
             "updateTime": self.update_time,
             "bars": [bar.to_qml() for bar in self.bars],
+            "timeFrame": self.time_frame,
+            "customCount": self.custom_count,
+            "predictionUnit": self.prediction_unit,
+            "predictionAmount": self.prediction_amount,
+            "forecast": [bar.to_qml() for bar in self.forecast],
+            "forecastStartIndex": self.forecast_start_index or len(self.bars),
             "technical": self.technical.to_qml() if self.technical else {},
             "fundamental": self.fundamental.to_qml() if self.fundamental else {},
             "timing": self.timing.to_qml() if self.timing else {},

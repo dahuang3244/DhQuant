@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -100,7 +102,10 @@ Rectangle {
                     text: modelData
                     Layout.preferredWidth: 48
                     Layout.preferredHeight: 32
-                    onClicked: watchlist.setPredictionRange(modelData)
+                    onClicked: {
+                        watchlist.setPredictionRange(modelData)
+                        watchlist.requestPrediction(root.rowData.symbol, unitFor(modelData), amountFor(modelData))
+                    }
                     scale: pressed ? 0.96 : 1
 
                     Behavior on scale { NumberAnimation { duration: 100; easing.type: Easing.OutCubic } }
@@ -128,6 +133,7 @@ Rectangle {
             text: "请求预测"
             Layout.fillWidth: true
             Layout.preferredHeight: 40
+            onClicked: watchlist.requestPrediction(root.rowData.symbol, unitFor(watchlist.predictionRange), amountFor(watchlist.predictionRange))
             scale: pressed ? 0.98 : 1
 
             Behavior on scale { NumberAnimation { duration: 100; easing.type: Easing.OutCubic } }
@@ -166,6 +172,24 @@ Rectangle {
         if (Math.abs(value) >= 1000)
             return (value / 1000).toFixed(2) + "K"
         return Number(value).toFixed(0)
+    }
+
+    function unitFor(range) {
+        if (range === "30m")
+            return "分钟"
+        if (range === "2h")
+            return "小时"
+        return "天"
+    }
+
+    function amountFor(range) {
+        if (range === "30m")
+            return "30"
+        if (range === "2h")
+            return "2"
+        if (range === "1w")
+            return "7"
+        return "1"
     }
 
     component Metric: ColumnLayout {

@@ -35,9 +35,27 @@ ApplicationWindow {
                 visible: dashboard.page === "watchlist"
             }
 
+            BacktestPage {
+                anchors.fill: parent
+                visible: dashboard.page === "backtest"
+            }
+
+            StrategyPage {
+                anchors.fill: parent
+                visible: dashboard.page === "strategy"
+            }
+
+            TradingPage {
+                anchors.fill: parent
+                visible: dashboard.page === "account"
+            }
+
             PlaceholderPage {
                 anchors.fill: parent
                 visible: dashboard.page !== "watchlist"
+                      && dashboard.page !== "backtest"
+                      && dashboard.page !== "strategy"
+                      && dashboard.page !== "account"
                 title: sidebar.labelFor(dashboard.page)
                 hint: "这个页面会沿用相同的 PySide 控制器 + QML 页面结构继续补齐。"
             }
@@ -45,12 +63,21 @@ ApplicationWindow {
     }
 
     Toast {
+        id: toastItem
         visible: dashboard.toastVisible
         title: dashboard.toastTitle
         message: dashboard.toastMessage
         anchors.right: parent.right
-        anchors.top: parent.top
+        anchors.bottom: parent.bottom
         anchors.margins: 20
-        onDismiss: dashboard.dismissToast()
+        onDismiss: { dashboard.dismissToast(); toastTimer.stop() }
+    }
+
+    Timer {
+        id: toastTimer
+        interval: 3200
+        repeat: false
+        running: dashboard.toastVisible
+        onTriggered: dashboard.dismissToast()
     }
 }

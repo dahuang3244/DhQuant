@@ -7,7 +7,7 @@ Rectangle {
     width: collapsed ? Theme.sidebarCollapsedWidth : Theme.sidebarWidth
     color: Theme.surface
     border.color: Theme.line
-    clip: true
+    clip: false
 
     property string page: "watchlist"
     property bool collapsed: false
@@ -50,41 +50,93 @@ Rectangle {
         NumberAnimation { duration: 260; easing.type: Easing.OutCubic }
     }
 
-    // Collapse toggle — absolute-positioned, glued to the right edge of the sidebar.
-    // x follows root.width (no separate Behavior) so it slides purely horizontally
-    // with the sidebar animation. y is fixed at header level — no diagonal movement.
-    Rectangle {
-        id: collapseBtn
-        z: 10
-        width: 28
-        height: 28
-        radius: 9
+    // Boundary rail: the affordance lives on the sidebar/workspace edge and
+    // only becomes prominent when the pointer approaches the divider.
+    Item {
+        id: collapseRail
+        z: 20
+        width: 18
+        height: root.height
+        x: root.width - width / 2
+        y: 0
 
-        x: root.width - width - 2
-        y: 27
+        readonly property bool active: collapseRailMA.containsMouse
 
-        color: collapseBtnMA.containsMouse ? Theme.panel3 : Theme.panel2
-        border.color: collapseBtnMA.containsMouse ? Theme.primary : Theme.border
-        Behavior on color        { ColorAnimation { duration: 150 } }
-        Behavior on border.color { ColorAnimation { duration: 150 } }
+        Rectangle {
+            id: railLine
+            width: collapseRail.active ? 2 : 1
+            radius: width / 2
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            color: collapseRail.active ? Theme.primary : Theme.line
+            opacity: collapseRail.active ? 0.78 : 0.72
 
-        Text {
-            anchors.centerIn: parent
-            text: root.collapsed ? "›" : "‹"
-            color: Theme.primary
-            font.pixelSize: 16
-            font.weight: Font.Bold
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+            Behavior on width { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
+            Behavior on color { ColorAnimation { duration: 140 } }
+            Behavior on opacity { NumberAnimation { duration: 140 } }
+        }
+
+        Rectangle {
+            id: railHandle
+            width: collapseRail.active ? 26 : 8
+            height: collapseRail.active ? 56 : 44
+            radius: 13
+            anchors {
+                verticalCenter: parent.verticalCenter
+                horizontalCenter: parent.horizontalCenter
+            }
+            color: collapseRail.active ? Theme.panel3 : Theme.panel2
+            border.color: collapseRail.active ? Theme.primary : Theme.border
+            opacity: collapseRail.active ? 1 : 0.42
+            scale: collapseRailMA.pressed ? 0.94 : 1
+
+            Behavior on width { NumberAnimation { duration: 170; easing.type: Easing.OutCubic } }
+            Behavior on height { NumberAnimation { duration: 170; easing.type: Easing.OutCubic } }
+            Behavior on color { ColorAnimation { duration: 150 } }
+            Behavior on border.color { ColorAnimation { duration: 150 } }
+            Behavior on opacity { NumberAnimation { duration: 150 } }
+            Behavior on scale { NumberAnimation { duration: 90; easing.type: Easing.OutCubic } }
+
+            Rectangle {
+                width: 1
+                height: 24
+                radius: 1
+                anchors.centerIn: parent
+                color: collapseRail.active ? Theme.primary : Theme.faint
+                opacity: root.collapsed || !collapseRail.active ? 0 : 0.55
+                Behavior on opacity { NumberAnimation { duration: 120 } }
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: root.collapsed ? "›" : "‹"
+                color: collapseRail.active ? Theme.text : Theme.primary
+                opacity: collapseRail.active ? 1 : 0
+                font.pixelSize: 18
+                font.weight: Font.DemiBold
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+
+                Behavior on color { ColorAnimation { duration: 130 } }
+                Behavior on opacity { NumberAnimation { duration: 120 } }
+            }
         }
 
         MouseArea {
-            id: collapseBtnMA
+            id: collapseRailMA
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
+            acceptedButtons: Qt.LeftButton
             onClicked: root.collapsed = !root.collapsed
         }
+
+        ToolTip.visible: collapseRail.active
+        ToolTip.delay: 450
+        ToolTip.text: root.collapsed ? "展开侧边栏" : "折叠侧边栏"
     }
 
     ColumnLayout {

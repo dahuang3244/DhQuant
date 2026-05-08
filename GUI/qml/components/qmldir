@@ -5,3 +5,8 @@ Topbar 1.0 Topbar.qml
 Toast 1.0 Toast.qml
 CandlestickChart 1.0 CandlestickChart.qml
 VolumeChart 1.0 VolumeChart.qml
+MacdChart 1.0 MacdChart.qml
+PnlBarChart 1.0 PnlBarChart.qml
+EquityCurveChart 1.0 EquityCurveChart.qml
+TradeAnnotatedChart 1.0 TradeAnnotatedChart.qml
+CombinedEquityChart 1.0 CombinedEquityChart.qml
