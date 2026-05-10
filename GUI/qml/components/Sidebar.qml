@@ -1,16 +1,19 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
 Rectangle {
     id: root
-    width: collapsed ? Theme.sidebarCollapsedWidth : Theme.sidebarWidth
+    width: Theme.sidebarWidth - (Theme.sidebarWidth - Theme.sidebarCollapsedWidth) * collapseProgress
     color: Theme.surface
     border.color: Theme.line
     clip: false
 
     property string page: "watchlist"
     property bool collapsed: false
+    property real collapseProgress: collapsed ? 1 : 0
     signal navigate(string page)
 
     FontLoader {
@@ -20,21 +23,21 @@ Rectangle {
 
     function labelFor(value) {
         const labels = {
-            "overview": "系统总览",
+            "news":      "行业新闻",
             "watchlist": "实时盯盘",
-            "account": "账户持仓",
-            "strategy": "策略中心",
-            "backtest": "回测工作台",
-            "risk": "风控中心",
-            "agent": "AI 决策台",
-            "journal": "日志与 Journal"
+            "account":   "账户持仓",
+            "strategy":  "策略中心",
+            "backtest":  "回测工作台",
+            "risk":      "风控中心",
+            "agent":     "AI 决策台",
+            "journal":   "交易日志"
         }
         return labels[value] || "未知页面"
     }
 
     function iconFor(value) {
         const icons = {
-            "overview":  "",
+            "news":      "",
             "watchlist": "",
             "account":   "",
             "strategy":  "",
@@ -46,8 +49,8 @@ Rectangle {
         return icons[value] || ""
     }
 
-    Behavior on width {
-        NumberAnimation { duration: 260; easing.type: Easing.OutCubic }
+    Behavior on collapseProgress {
+        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
     }
 
     // Boundary rail: the affordance lives on the sidebar/workspace edge and
@@ -141,54 +144,37 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.leftMargin: root.collapsed ? 14 : 22
-        anchors.rightMargin: root.collapsed ? 14 : 22
+        anchors.leftMargin: 22
+        anchors.rightMargin: 22
         anchors.topMargin: 22
         anchors.bottomMargin: 18
         spacing: 16
 
-        Behavior on anchors.leftMargin {
-            NumberAnimation { duration: 260; easing.type: Easing.OutCubic }
-        }
-        Behavior on anchors.rightMargin {
-            NumberAnimation { duration: 260; easing.type: Easing.OutCubic }
-        }
-
-        // Header: DQ badge + brand text (collapse button is absolute, not in this row)
-        RowLayout {
+        // Header: app icon remains anchored in both expanded and collapsed states.
+        Item {
             Layout.fillWidth: true
+            Layout.preferredHeight: 44
             Layout.bottomMargin: 12
-            spacing: 10
 
-            Rectangle {
+            Image {
+                id: appLogo
+                source: "../assets/icons/dhquant-logo.svg"
                 width: 38
                 height: 38
-                radius: 12
-                color: Theme.primarySoft
-                border.color: Theme.border
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "DQ"
-                    color: Theme.text
-                    font.pixelSize: 13
-                    font.weight: Font.DemiBold
-                }
+                sourceSize: Qt.size(38, 38)
+                smooth: true
+                anchors.verticalCenter: parent.verticalCenter
+                x: 0
             }
 
             ColumnLayout {
-                Layout.fillWidth: true
-                Layout.maximumWidth: root.collapsed ? 0 : 9999
+                anchors.left: appLogo.right
+                anchors.leftMargin: 10
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
                 spacing: 0
-                opacity: root.collapsed ? 0 : 1
+                opacity: Math.max(0, 1 - root.collapseProgress * 1.35)
                 clip: true
-
-                Behavior on Layout.maximumWidth {
-                    NumberAnimation { duration: 260; easing.type: Easing.OutCubic }
-                }
-                Behavior on opacity {
-                    NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-                }
 
                 Text {
                     text: "DhQuant"
@@ -208,7 +194,7 @@ Rectangle {
 
         Repeater {
             model: [
-                "overview", "watchlist", "account", "strategy",
+                "news", "watchlist", "account", "strategy",
                 "backtest", "risk", "agent", "journal"
             ]
 
@@ -228,44 +214,30 @@ Rectangle {
 
                 contentItem: Item {
                     id: btnContent
-                    property bool iconMode: root.collapsed
 
                     Text {
-                        id: navText
+                        id: navLabel
                         anchors.fill: parent
-                        text: btnContent.iconMode
-                              ? root.iconFor(navButton.modelData)
-                              : navButton.text
-                        font.family: btnContent.iconMode ? iconFont.name : ""
-                        font.pixelSize: btnContent.iconMode ? 24 : 15
+                        text: navButton.text
+                        font.pixelSize: 15
                         color: root.page === navButton.modelData ? Theme.text : Theme.muted
                         verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: btnContent.iconMode
-                                             ? Text.AlignHCenter
-                                             : Text.AlignLeft
-                        leftPadding: btnContent.iconMode ? 0 : 14
+                        horizontalAlignment: Text.AlignLeft
+                        leftPadding: 14
+                        opacity: Math.max(0, 1 - root.collapseProgress * 1.5)
                     }
 
-                    SequentialAnimation {
-                        id: textTransition
-                        running: false
-                        NumberAnimation {
-                            target: navText; property: "opacity"; to: 0
-                            duration: 90; easing.type: Easing.InCubic
-                        }
-                        PropertyAction {
-                            target: btnContent; property: "iconMode"
-                            value: root.collapsed
-                        }
-                        NumberAnimation {
-                            target: navText; property: "opacity"; to: 1
-                            duration: 150; easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Connections {
-                        target: root
-                        function onCollapsedChanged() { textTransition.restart() }
+                    Text {
+                        id: navIcon
+                        anchors.centerIn: parent
+                        width: parent.width
+                        text: root.iconFor(navButton.modelData)
+                        font.family: iconFont.name
+                        font.pixelSize: 24
+                        color: root.page === navButton.modelData ? Theme.text : Theme.muted
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        opacity: Math.max(0, (root.collapseProgress - 0.25) / 0.75)
                     }
                 }
 

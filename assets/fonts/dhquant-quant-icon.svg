@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">DhQuant Quantitative Signal Icon</title>
+  <desc id="desc">A minimalist dark fintech app icon with a teal quantitative signal mark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="128" y1="96" x2="896" y2="928" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f2024"/>
+      <stop offset="1" stop-color="#071115"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="160" y1="96" x2="864" y2="928" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2ad6bd" stop-opacity=".58"/>
+      <stop offset=".58" stop-color="#1c3b42" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#56a8d9" stop-opacity=".48"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="248" y1="664" x2="776" y2="348" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#19b69f"/>
+      <stop offset=".58" stop-color="#2ad6bd"/>
+      <stop offset="1" stop-color="#6fb7e7"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="258" y1="708" x2="764" y2="708" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e8c857"/>
+      <stop offset="1" stop-color="#d6a934"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.09 0 0 0 0 0.84 0 0 0 0 0.74 0 0 0 .42 0"/>
+      <feBlend in="SourceGraphic" mode="screen"/>
+    </filter>
+    <clipPath id="round">
+      <rect x="72" y="72" width="880" height="880" rx="204"/>
+    </clipPath>
+  </defs>
+
+  <rect x="72" y="72" width="880" height="880" rx="204" fill="url(#bg)"/>
+  <rect x="83" y="83" width="858" height="858" rx="193" fill="none" stroke="url(#edge)" stroke-width="22"/>
+
+  <g clip-path="url(#round)" opacity=".18">
+    <path d="M252 192v640M384 192v640M516 192v640M648 192v640M780 192v640" stroke="#7da5ad" stroke-width="3"/>
+    <path d="M192 252h640M192 384h640M192 516h640M192 648h640M192 780h640" stroke="#7da5ad" stroke-width="3"/>
+  </g>
+
+  <g fill="#102329" stroke="#24515a" stroke-width="8" opacity=".95">
+    <rect x="286" y="654" width="44" height="52" rx="16"/>
+    <rect x="476" y="532" width="44" height="174" rx="16"/>
+    <rect x="681" y="364" width="44" height="342" rx="16"/>
+  </g>
+
+  <g filter="url(#softGlow)">
+    <path d="M260 706h506" stroke="url(#gold)" stroke-width="26" stroke-linecap="round" opacity=".92"/>
+    <path d="M308 654c70-112 126-22 190-122 58-91 126-88 205-168" fill="none" stroke="url(#signal)" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M308 654c70-112 126-22 190-122 58-91 126-88 205-168" fill="none" stroke="#dffbf7" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+  </g>
+
+  <g fill="#0a1518" stroke="#2ad6bd" stroke-width="22">
+    <circle cx="308" cy="654" r="42"/>
+    <circle cx="498" cy="532" r="42"/>
+    <circle cx="703" cy="364" r="42"/>
+  </g>
+  <g fill="#2ad6bd">
+    <circle cx="308" cy="654" r="14"/>
+    <circle cx="498" cy="532" r="14"/>
+    <circle cx="703" cy="364" r="14"/>
+  </g>
+</svg>

@@ -9,17 +9,18 @@ import "../components"
 Item {
     id: root
 
-    readonly property int symbolColWidth: 178
-    readonly property int favoriteColWidth: 44
-    readonly property int marketColWidth: 74
-    readonly property int priceColWidth: 116
-    readonly property int changeColWidth: 106
-    readonly property int volumeColWidth: 132
-    readonly property int turnoverColWidth: 132
-    readonly property int updateColWidth: 112
-    readonly property int timeControlWidth: 120
-    readonly property int forecastControlWidth: 92
-    readonly property int controlGap: 8
+    readonly property int tableHPadding: 14
+    readonly property int symbolColWidth: 156
+    readonly property int favoriteColWidth: 40
+    readonly property int marketColWidth: 54
+    readonly property int priceColWidth: 98
+    readonly property int changeColWidth: 92
+    readonly property int volumeColWidth: 104
+    readonly property int turnoverColWidth: 112
+    readonly property int updateColWidth: 92
+    readonly property int timeControlWidth: 112
+    readonly property int forecastControlWidth: 78
+    readonly property int controlGap: 6
 
     function selectedBars(symbol) {
         return watchlist.barsFor(symbol);
@@ -293,8 +294,8 @@ Item {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 20
-                        anchors.rightMargin: 20
+                        anchors.leftMargin: root.tableHPadding
+                        anchors.rightMargin: root.tableHPadding
                         spacing: 0
 
                         HeaderCell {
@@ -332,26 +333,21 @@ Item {
                         }
 
                         RowLayout {
-                            Layout.fillWidth: true
-                            Layout.minimumWidth: root.timeControlWidth + root.controlGap + root.forecastControlWidth
+                            Layout.preferredWidth: root.timeControlWidth + root.controlGap + root.forecastControlWidth
+                            Layout.minimumWidth: Layout.preferredWidth
+                            Layout.maximumWidth: Layout.preferredWidth
                             spacing: root.controlGap
-
-                            Item {
-                                Layout.fillWidth: true
-                            }
 
                             HeaderCell {
                                 text: "图表控制"
                                 Layout.preferredWidth: root.timeControlWidth
                                 Layout.minimumWidth: root.timeControlWidth
-                                Layout.maximumWidth: root.timeControlWidth
                                 horizontalAlignment: Text.AlignHCenter
                             }
 
                             Item {
                                 Layout.preferredWidth: root.forecastControlWidth
                                 Layout.minimumWidth: root.forecastControlWidth
-                                Layout.maximumWidth: root.forecastControlWidth
                             }
                         }
                     }
@@ -441,8 +437,8 @@ Item {
 
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: 20
-                                anchors.rightMargin: 20
+                                anchors.leftMargin: root.tableHPadding
+                                anchors.rightMargin: root.tableHPadding
                                 spacing: 0
 
                                 ColumnLayout {
@@ -461,7 +457,7 @@ Item {
                                         color: Theme.muted
                                         font.pixelSize: 12
                                         elide: Text.ElideRight
-                                        Layout.maximumWidth: 156
+                                        Layout.maximumWidth: root.symbolColWidth - 8
                                     }
                                 }
 
@@ -513,14 +509,11 @@ Item {
                                 }
 
                                 RowLayout {
-                                    Layout.fillWidth: true
-                                    Layout.minimumWidth: root.timeControlWidth + root.controlGap + root.forecastControlWidth
+                                    Layout.preferredWidth: root.timeControlWidth + root.controlGap + root.forecastControlWidth
+                                    Layout.minimumWidth: Layout.preferredWidth
+                                    Layout.maximumWidth: Layout.preferredWidth
                                     Layout.preferredHeight: 64
                                     spacing: root.controlGap
-
-                                    Item {
-                                        Layout.fillWidth: true
-                                    }
 
                                     TimeMenuButton {
                                         symbol: delegateRoot.modelData.symbol
@@ -528,7 +521,6 @@ Item {
                                         customCount: delegateRoot.modelData.customCount
                                         Layout.preferredWidth: root.timeControlWidth
                                         Layout.minimumWidth: root.timeControlWidth
-                                        Layout.maximumWidth: root.timeControlWidth
                                         Layout.preferredHeight: 34
                                         Layout.alignment: Qt.AlignVCenter
                                     }
@@ -539,7 +531,6 @@ Item {
                                         currentAmount: delegateRoot.modelData.predictionAmount
                                         Layout.preferredWidth: root.forecastControlWidth
                                         Layout.minimumWidth: root.forecastControlWidth
-                                        Layout.maximumWidth: root.forecastControlWidth
                                         Layout.preferredHeight: 34
                                         Layout.alignment: Qt.AlignVCenter
                                     }
@@ -550,7 +541,7 @@ Item {
                         Rectangle {
                             id: expandedPanel
                             width: parent.width
-                            height: delegateRoot.expanded ? 560 : 0
+                            height: delegateRoot.expanded ? 570 : 0
                             opacity: delegateRoot.expanded ? 1 : 0
                             visible: height > 1
                             color: Theme.panel2
@@ -583,7 +574,7 @@ Item {
 
                                     Rectangle {
                                         Layout.fillWidth: true
-                                        Layout.preferredHeight: 300
+                                        Layout.preferredHeight: 270
                                         radius: Theme.radiusLarge
                                         color: Theme.background
                                         border.color: Theme.line
@@ -601,7 +592,7 @@ Item {
 
                                     Rectangle {
                                         Layout.fillWidth: true
-                                        Layout.preferredHeight: 82
+                                        Layout.preferredHeight: 124
                                         radius: Theme.radiusLarge
                                         color: Theme.background
                                         border.color: Theme.line
