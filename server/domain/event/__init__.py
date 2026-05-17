@@ -1,0 +1,1 @@
+"""Event journal domain service."""

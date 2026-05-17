@@ -16,57 +16,34 @@ ApplicationWindow {
     visible: true
     title: "DhQuant"
     flags: Qt.Window | Qt.FramelessWindowHint
-    color: Theme.background
+    color: "transparent"
     readonly property int designWidth: 1440
     readonly property int designHeight: 900
     readonly property int titleBarHeight: 34
 
-    ColumnLayout {
+    Rectangle {
+        id: windowFrame
         anchors.fill: parent
-        spacing: 0
+        radius: 12
+        color: Theme.background
+        clip: true
 
-        Rectangle {
-            id: titleBar
-            Layout.fillWidth: true
-            Layout.preferredHeight: root.titleBarHeight
-            color: Theme.background
-            border.color: Theme.line
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
 
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.LeftButton
-                onPressed: root.startSystemMove()
-                onDoubleClicked: {
-                    if (root.visibility === Window.Maximized) {
-                        root.showNormal()
-                    } else {
-                        root.showMaximized()
-                    }
-                }
-            }
+            Rectangle {
+                id: titleBar
+                Layout.fillWidth: true
+                Layout.preferredHeight: root.titleBarHeight
+                color: Theme.background
+                border.color: Theme.line
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 14
-                anchors.rightMargin: 14
-                spacing: 8
-
-                WindowButton {
-                    dotColor: "#ff5f57"
-                    hoverColor: Qt.rgba(1.0, 0.373, 0.341, 0.18)
-                    onClicked: root.close()
-                }
-
-                WindowButton {
-                    dotColor: "#ffbd2e"
-                    hoverColor: Qt.rgba(1.0, 0.741, 0.180, 0.18)
-                    onClicked: root.showMinimized()
-                }
-
-                WindowButton {
-                    dotColor: "#28c840"
-                    hoverColor: Qt.rgba(0.157, 0.784, 0.251, 0.18)
-                    onClicked: {
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton
+                    onPressed: root.startSystemMove()
+                    onDoubleClicked: {
                         if (root.visibility === Window.Maximized) {
                             root.showNormal()
                         } else {
@@ -75,112 +52,155 @@ ApplicationWindow {
                     }
                 }
 
-                Item { Layout.fillWidth: true }
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 14
+                    anchors.rightMargin: 14
+                    spacing: 8
 
-                Text {
-                    text: root.title
-                    color: Theme.muted
-                    font.pixelSize: 13
-                    font.weight: Font.DemiBold
-                    Layout.alignment: Qt.AlignVCenter
+                    WindowButton {
+                        dotColor: "#ff5f57"
+                        hoverColor: Qt.rgba(1.0, 0.373, 0.341, 0.18)
+                        onClicked: root.close()
+                    }
+
+                    WindowButton {
+                        dotColor: "#ffbd2e"
+                        hoverColor: Qt.rgba(1.0, 0.741, 0.180, 0.18)
+                        onClicked: root.showMinimized()
+                    }
+
+                    WindowButton {
+                        dotColor: "#28c840"
+                        hoverColor: Qt.rgba(0.157, 0.784, 0.251, 0.18)
+                        onClicked: {
+                            if (root.visibility === Window.Maximized) {
+                                root.showNormal()
+                            } else {
+                                root.showMaximized()
+                            }
+                        }
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Text {
+                        text: root.title
+                        color: Theme.muted
+                        font.pixelSize: 13
+                        font.weight: Font.DemiBold
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Item { Layout.preferredWidth: 58 }
                 }
+            }
 
-                Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                clip: true
 
-                Item { Layout.preferredWidth: 58 }
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 0
+
+                    Sidebar {
+                        id: sidebar
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: width
+                        page: dashboard.page
+                        onNavigate: function(nextPage) { dashboard.setPage(nextPage) }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        NewsPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "news"
+                        }
+
+                        WatchlistPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "watchlist"
+                        }
+
+                        BacktestPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "backtest"
+                        }
+
+                        StrategyPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "strategy"
+                        }
+
+                        TradingPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "account"
+                        }
+
+                        RiskPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "risk"
+                        }
+
+                        JournalPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "journal"
+                        }
+
+                        AgentPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "agent"
+                        }
+
+                        SettingsPage {
+                            anchors.fill: parent
+                            visible: dashboard.page === "settings"
+                        }
+
+                        PlaceholderPage {
+                            anchors.fill: parent
+                            visible: dashboard.page !== "news"
+                                  && dashboard.page !== "watchlist"
+                                  && dashboard.page !== "backtest"
+                                  && dashboard.page !== "strategy"
+                                  && dashboard.page !== "account"
+                                  && dashboard.page !== "risk"
+                                  && dashboard.page !== "journal"
+                                  && dashboard.page !== "agent"
+                                  && dashboard.page !== "settings"
+                            title: sidebar.labelFor(dashboard.page)
+                            hint: "这个页面会沿用相同的 QML 页面结构继续补齐。"
+                        }
+                    }
+                }
             }
         }
 
-        Item {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            clip: true
-
-            RowLayout {
-                anchors.fill: parent
-                spacing: 0
-
-                Sidebar {
-                    id: sidebar
-                    Layout.fillHeight: true
-                    Layout.preferredWidth: width
-                    page: dashboard.page
-                    onNavigate: function(nextPage) { dashboard.setPage(nextPage) }
-                }
-
-                Item {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
-                    NewsPage {
-                        anchors.fill: parent
-                        visible: dashboard.page === "news"
-                    }
-
-                    WatchlistPage {
-                        anchors.fill: parent
-                        visible: dashboard.page === "watchlist"
-                    }
-
-                    BacktestPage {
-                        anchors.fill: parent
-                        visible: dashboard.page === "backtest"
-                    }
-
-                    StrategyPage {
-                        anchors.fill: parent
-                        visible: dashboard.page === "strategy"
-                    }
-
-                    TradingPage {
-                        anchors.fill: parent
-                        visible: dashboard.page === "account"
-                    }
-
-                    RiskPage {
-                        anchors.fill: parent
-                        visible: dashboard.page === "risk"
-                    }
-
-                    JournalPage {
-                        anchors.fill: parent
-                        visible: dashboard.page === "journal"
-                    }
-
-                    PlaceholderPage {
-                        anchors.fill: parent
-                        visible: dashboard.page !== "news"
-                              && dashboard.page !== "watchlist"
-                              && dashboard.page !== "backtest"
-                              && dashboard.page !== "strategy"
-                              && dashboard.page !== "account"
-                              && dashboard.page !== "risk"
-                              && dashboard.page !== "journal"
-                        title: sidebar.labelFor(dashboard.page)
-                        hint: "这个页面会沿用相同的 PySide 控制器 + QML 页面结构继续补齐。"
-                    }
-                }
-            }
+        Toast {
+            id: toastItem
+            visible: dashboard.toastVisible
+            title: dashboard.toastTitle
+            message: dashboard.toastMessage
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: 20
+            onDismiss: { dashboard.dismissToast(); toastTimer.stop() }
         }
-    }
 
-    Toast {
-        id: toastItem
-        visible: dashboard.toastVisible
-        title: dashboard.toastTitle
-        message: dashboard.toastMessage
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 20
-        onDismiss: { dashboard.dismissToast(); toastTimer.stop() }
-    }
-
-    Timer {
-        id: toastTimer
-        interval: 3200
-        repeat: false
-        running: dashboard.toastVisible
-        onTriggered: dashboard.dismissToast()
+        Timer {
+            id: toastTimer
+            interval: 3200
+            repeat: false
+            running: dashboard.toastVisible
+            onTriggered: dashboard.dismissToast()
+        }
     }
 
     ResizeHandle {

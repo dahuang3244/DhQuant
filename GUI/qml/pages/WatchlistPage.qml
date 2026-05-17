@@ -113,7 +113,7 @@ Item {
                         id: brokerBox
                         width: 128
                         height: 40
-                        model: ["Mock", "CryptoGateway", "ChinaBroker", "UsBroker"]
+                        model: ["CryptoGateway", "ChinaBroker", "UsBroker"]
                         currentIndex: model.indexOf(watchlist.broker)
                         onActivated: watchlist.setBroker(currentText)
                     }

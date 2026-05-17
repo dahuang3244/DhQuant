@@ -28,7 +28,6 @@ class MarketKind(str, Enum):
 
 
 class BrokerKind(str, Enum):
-    MOCK = "Mock"
     CRYPTO_GATEWAY = "CryptoGateway"
     CHINA_BROKER = "ChinaBroker"
     US_BROKER = "UsBroker"

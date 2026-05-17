@@ -365,7 +365,7 @@ Item {
 
                         Button {
                             Layout.fillWidth: true; implicitHeight: 40; text: "开始采集"
-                            onClicked: dashboard.showToast("数据采集", "Mock 模式 — 数据采集已模拟完成")
+                            onClicked: dashboard.showToast("数据采集", "后端数据采集服务尚未接入")
                             contentItem: Text { text: parent.text; color: Theme.text; font.pixelSize: 14; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                             background: Rectangle { radius: 10; color: parent.hovered ? Theme.primaryHover : Theme.primary; Behavior on color { ColorAnimation { duration: 150 } } }
                         }
@@ -674,7 +674,7 @@ Item {
 
                             Button {
                                 Layout.fillWidth: true; implicitHeight: 38; text: "计算选中因子"
-                                onClicked: dashboard.showToast("因子计算", "已选 " + strategy.selectedFactors.length + " 个因子 — Mock 完成")
+                                onClicked: dashboard.showToast("因子计算", "因子计算服务尚未接入")
                                 contentItem: Text { text: parent.text; color: Theme.text; font.pixelSize: 13; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                                 background: Rectangle { radius: 10; color: parent.hovered ? Theme.primaryHover : Theme.primary; Behavior on color { ColorAnimation { duration: 150 } } }
                             }
@@ -776,7 +776,7 @@ Item {
                         Item { Layout.fillHeight: true }
                         Button {
                             Layout.fillWidth: true; implicitHeight: 38; text: "开始挖掘"
-                            onClicked: dashboard.showToast("因子挖掘", "Mock — 已返回 " + strategy.minedFactors.length + " 个候选因子")
+                            onClicked: dashboard.showToast("因子挖掘", "因子挖掘服务尚未接入")
                             contentItem: Text { text: parent.text; color: Theme.text; font.pixelSize: 13; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                             background: Rectangle { radius: 10; color: parent.hovered ? Theme.primaryHover : Theme.primary; Behavior on color { ColorAnimation { duration: 150 } } }
                         }
@@ -878,58 +878,65 @@ Item {
                 anchors.fill: parent; spacing: 14
                 visible: strategy.activeTab === "ml"
 
-                ColumnLayout {
-                    Layout.fillWidth: true; Layout.fillHeight: true; spacing: 10
-                    Text { text: "可用模型"; color: Theme.muted; font.pixelSize: 11; font.letterSpacing: 0.8 }
+                Rectangle {
+                    Layout.fillWidth: true; Layout.fillHeight: true
+                    color: Theme.surface; radius: Theme.radiusLarge; border.color: Theme.line
 
-                    Repeater {
-                        model: strategy.mlModels
-                        delegate: Rectangle {
-                            required property var modelData
-                            Layout.fillWidth: true; height: 72
-                            color: strategy.selectedMlModel === modelData.name ? Theme.panel3 : Theme.surface
-                            radius: Theme.radiusLarge
-                            border.color: strategy.selectedMlModel === modelData.name ? Theme.primary : Theme.line
-                            Behavior on border.color { ColorAnimation { duration: 150 } }
-                            Behavior on color        { ColorAnimation { duration: 150 } }
+                    ColumnLayout {
+                        anchors { fill: parent; margins: 14 }
+                        spacing: 10
 
-                            RowLayout {
-                                anchors { fill: parent; leftMargin: 16; rightMargin: 16 }
-                                spacing: 12
+                        Text { text: "可用模型"; color: Theme.muted; font.pixelSize: 11; font.letterSpacing: 0.8 }
 
-                                ColumnLayout {
-                                    spacing: 4; Layout.fillWidth: true
-                                    RowLayout {
-                                        spacing: 8
-                                        Text { text: modelData.name; color: Theme.text; font.pixelSize: 15; font.weight: Font.DemiBold }
-                                        Rectangle { height: 18; radius: 9; width: _mlType.implicitWidth + 12; color: Theme.panel2; border.color: Theme.border; Text { id: _mlType; anchors.centerIn: parent; text: modelData.type; color: Theme.muted; font.pixelSize: 9 } }
-                                        Rectangle {
-                                            height: 18; radius: 9; width: _mlSt.implicitWidth + 12
-                                            color: modelData.status === "已训练" ? "#122820" : "#1c1c14"
-                                            border.color: modelData.status === "已训练" ? Theme.positive : Theme.faint
-                                            Text { id: _mlSt; anchors.centerIn: parent; text: modelData.status; color: modelData.status === "已训练" ? Theme.positive : Theme.faint; font.pixelSize: 9; font.weight: Font.DemiBold }
+                        Repeater {
+                            model: strategy.mlModels
+                            delegate: Rectangle {
+                                required property var modelData
+                                Layout.fillWidth: true; height: 72
+                                color: strategy.selectedMlModel === modelData.name ? Theme.panel3 : Theme.panel2
+                                radius: Theme.radius
+                                border.color: strategy.selectedMlModel === modelData.name ? Theme.primary : Theme.border
+                                Behavior on border.color { ColorAnimation { duration: 150 } }
+                                Behavior on color        { ColorAnimation { duration: 150 } }
+
+                                RowLayout {
+                                    anchors { fill: parent; leftMargin: 16; rightMargin: 16 }
+                                    spacing: 12
+
+                                    ColumnLayout {
+                                        spacing: 4; Layout.fillWidth: true
+                                        RowLayout {
+                                            spacing: 8
+                                            Text { text: modelData.name; color: Theme.text; font.pixelSize: 15; font.weight: Font.DemiBold }
+                                            Rectangle { height: 18; radius: 9; width: _mlType.implicitWidth + 12; color: Theme.panel2; border.color: Theme.border; Text { id: _mlType; anchors.centerIn: parent; text: modelData.type; color: Theme.muted; font.pixelSize: 9 } }
+                                            Rectangle {
+                                                height: 18; radius: 9; width: _mlSt.implicitWidth + 12
+                                                color: modelData.status === "已训练" ? "#122820" : "#1c1c14"
+                                                border.color: modelData.status === "已训练" ? Theme.positive : Theme.faint
+                                                Text { id: _mlSt; anchors.centerIn: parent; text: modelData.status; color: modelData.status === "已训练" ? Theme.positive : Theme.faint; font.pixelSize: 9; font.weight: Font.DemiBold }
+                                            }
+                                        }
+                                        RowLayout {
+                                            spacing: 16
+                                            Text { text: modelData.status === "已训练" ? "准确率 " + (modelData.accuracy * 100).toFixed(1) + "%" : "— 未训练"; color: Theme.muted; font.pixelSize: 11; font.family: "Menlo" }
+                                            Text { text: modelData.status === "已训练" ? "Sharpe " + modelData.sharpe.toFixed(2) : ""; color: Theme.muted; font.pixelSize: 11; font.family: "Menlo" }
                                         }
                                     }
-                                    RowLayout {
-                                        spacing: 16
-                                        Text { text: modelData.status === "已训练" ? "准确率 " + (modelData.accuracy * 100).toFixed(1) + "%" : "— 未训练"; color: Theme.muted; font.pixelSize: 11; font.family: "Menlo" }
-                                        Text { text: modelData.status === "已训练" ? "Sharpe " + modelData.sharpe.toFixed(2) : ""; color: Theme.muted; font.pixelSize: 11; font.family: "Menlo" }
+
+                                    Button {
+                                        implicitWidth: 68; implicitHeight: 32
+                                        text: strategy.selectedMlModel === modelData.name ? "已选中" : "选择"
+                                        onClicked: strategy.setMlModel(modelData.name)
+                                        contentItem: Text { text: parent.text; color: strategy.selectedMlModel === modelData.name ? Theme.primary : Theme.muted; font.pixelSize: 12; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                                        background: Rectangle { radius: 9; color: strategy.selectedMlModel === modelData.name ? Theme.primarySoft : (parent.hovered ? Theme.panel2 : "transparent"); border.color: strategy.selectedMlModel === modelData.name ? Theme.primary : "transparent"; Behavior on color { ColorAnimation { duration: 120 } } }
                                     }
                                 }
-
-                                Button {
-                                    implicitWidth: 68; implicitHeight: 32
-                                    text: strategy.selectedMlModel === modelData.name ? "已选中" : "选择"
-                                    onClicked: strategy.setMlModel(modelData.name)
-                                    contentItem: Text { text: parent.text; color: strategy.selectedMlModel === modelData.name ? Theme.primary : Theme.muted; font.pixelSize: 12; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
-                                    background: Rectangle { radius: 9; color: strategy.selectedMlModel === modelData.name ? Theme.primarySoft : (parent.hovered ? Theme.panel2 : "transparent"); border.color: strategy.selectedMlModel === modelData.name ? Theme.primary : "transparent"; Behavior on color { ColorAnimation { duration: 120 } } }
-                                }
+                                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: strategy.setMlModel(modelData.name) }
                             }
-                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: strategy.setMlModel(modelData.name) }
                         }
-                    }
 
-                    Item { Layout.fillHeight: true }
+                        Item { Layout.fillHeight: true }
+                    }
                 }
 
                 Rectangle {
@@ -962,7 +969,7 @@ Item {
                         Item { Layout.fillHeight: true }
                         Button {
                             Layout.fillWidth: true; implicitHeight: 38; text: "训练模型"
-                            onClicked: dashboard.showToast("模型训练", strategy.selectedMlModel + " — Mock 训练完成，Sharpe: 1.82")
+                            onClicked: dashboard.showToast("模型训练", "模型训练服务尚未接入")
                             contentItem: Text { text: parent.text; color: Theme.text; font.pixelSize: 13; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                             background: Rectangle { radius: 10; color: parent.hovered ? Theme.primaryHover : Theme.primary; Behavior on color { ColorAnimation { duration: 150 } } }
                         }
@@ -984,62 +991,150 @@ Item {
                         anchors { fill: parent; leftMargin: 14; rightMargin: 14 }
                         spacing: 10
 
-                        SgLabel { text: "选择策略" }
-                        ComboBox {
-                            id: strategyPicker
-                            implicitWidth: 190; implicitHeight: 36
-                            model: strategy.allStrategies
-                            currentIndex: {
-                                var idx = strategy.allStrategies.indexOf(strategy.currentStrategy)
-                                return idx < 0 ? 0 : idx
-                            }
-                            onActivated: strategy.selectStrategy(currentText)
+                        // ── Editable strategy selector ──────────────────
+                        Item {
+                            id: stratSelectorItem
+                            implicitWidth: 280; implicitHeight: 36
 
-                            contentItem: Text {
-                                leftPadding: 10; rightPadding: 26
-                                text: strategyPicker.displayText
-                                color: Theme.text; font.pixelSize: 13
-                                verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight
-                            }
-                            indicator: Text {
-                                x: strategyPicker.width - width - 10
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "▾"; color: Theme.faint; font.pixelSize: 9
-                            }
-                            background: Rectangle { radius: 10; color: Theme.background; border.color: strategyPicker.down ? Theme.primary : Theme.border; Behavior on border.color { ColorAnimation { duration: 140 } } }
-
-                            delegate: ItemDelegate {
-                                required property string modelData
-                                required property int index
-                                width: strategyPicker.width; height: 30
-                                contentItem: Text { text: modelData; color: Theme.text; font.pixelSize: 12; verticalAlignment: Text.AlignVCenter; leftPadding: 10; elide: Text.ElideRight }
-                                background: Rectangle { radius: 6; color: parent.hovered ? Theme.panel3 : (strategyPicker.currentIndex === index ? Theme.primarySoft : "transparent") }
-                            }
-
-                            popup: Popup {
-                                y: strategyPicker.height + 2
-                                width: strategyPicker.width
-                                implicitHeight: Math.min(260, listview.contentHeight + 8)
-                                padding: 4
-                                background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border }
-                                contentItem: ListView {
-                                    id: listview
-                                    clip: true
-                                    model: strategyPicker.delegateModel
-                                    ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+                            Connections {
+                                target: strategy
+                                function onStateChanged() {
+                                    if (stratNameInput.text !== strategy.strategyName)
+                                        stratNameInput.text = strategy.strategyName
                                 }
                             }
-                        }
 
-                        Rectangle { width: 1; height: 28; color: Theme.line }
+                            Rectangle {
+                                anchors.fill: parent; radius: 10; color: Theme.background
+                                border.color: stratNameInput.activeFocus || stratPickerPopup.visible
+                                              ? Theme.primary : Theme.border
+                                Behavior on border.color { ColorAnimation { duration: 140 } }
 
-                        SgLabel { text: "名称" }
-                        TextField {
-                            implicitWidth: 170; implicitHeight: 36
-                            text: strategy.strategyName
-                            color: Theme.text; font.pixelSize: 13; leftPadding: 10; selectByMouse: true
-                            onEditingFinished: strategy.setStrategyName(text)
-                            background: Rectangle { radius: 10; color: Theme.background; border.color: parent.activeFocus ? Theme.primary : Theme.border; Behavior on border.color { ColorAnimation { duration: 140 } } }
+                                RowLayout {
+                                    anchors { fill: parent; leftMargin: 10; rightMargin: 4 }
+                                    spacing: 4
+
+                                    TextInput {
+                                        id: stratNameInput
+                                        Layout.fillWidth: true
+                                        text: strategy.strategyName
+                                        color: Theme.text; font.pixelSize: 13
+                                        selectByMouse: true; clip: true
+                                        verticalAlignment: TextInput.AlignVCenter
+                                        onEditingFinished: strategy.setStrategyName(text)
+                                    }
+
+                                    Rectangle {
+                                        width: 26; height: 26; radius: 7
+                                        color: dropArrowMa.containsMouse ? Theme.panel2 : "transparent"
+                                        Behavior on color { ColorAnimation { duration: 100 } }
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: stratPickerPopup.visible ? "▴" : "▾"
+                                            color: Theme.faint; font.pixelSize: 9
+                                        }
+                                        MouseArea {
+                                            id: dropArrowMa
+                                            anchors.fill: parent; hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: stratPickerPopup.visible
+                                                       ? stratPickerPopup.close()
+                                                       : stratPickerPopup.open()
+                                        }
+                                    }
+                                }
+                            }
+
+                            Popup {
+                                id: stratPickerPopup
+                                x: 0; y: parent.height + 4
+                                width: parent.width
+                                padding: 4
+                                closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+                                background: Rectangle {
+                                    color: Theme.panel2; radius: Theme.radius
+                                    border.color: Theme.border
+                                }
+
+                                contentItem: ColumnLayout {
+                                    spacing: 2
+
+                                    ScrollView {
+                                        Layout.fillWidth: true
+                                        implicitHeight: Math.min(240, spList.contentHeight)
+                                        clip: true
+                                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+
+                                        ListView {
+                                            id: spList
+                                            model: strategy.allStrategies
+                                            spacing: 2
+                                            delegate: Rectangle {
+                                                required property string modelData
+                                                width: ListView.view.width; height: 30; radius: 6
+                                                color: strategy.currentStrategy === modelData
+                                                       ? Theme.primarySoft
+                                                       : (spItemMa.containsMouse ? Theme.panel3 : "transparent")
+                                                Behavior on color { ColorAnimation { duration: 100 } }
+
+                                                RowLayout {
+                                                    anchors { fill: parent; leftMargin: 10; rightMargin: 8 }
+                                                    Text {
+                                                        text: modelData
+                                                        color: strategy.currentStrategy === modelData
+                                                               ? Theme.primary : Theme.text
+                                                        font.pixelSize: 12; elide: Text.ElideRight
+                                                        Layout.fillWidth: true
+                                                        verticalAlignment: Text.AlignVCenter
+                                                    }
+                                                    Text {
+                                                        visible: strategy.currentStrategy === modelData
+                                                        text: "✓"; color: Theme.primary; font.pixelSize: 11
+                                                    }
+                                                }
+                                                MouseArea {
+                                                    id: spItemMa
+                                                    anchors.fill: parent; hoverEnabled: true
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    onClicked: {
+                                                        strategy.selectStrategy(modelData)
+                                                        stratNameInput.text = strategy.strategyName
+                                                        stratPickerPopup.close()
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    Rectangle { Layout.fillWidth: true; height: 1; color: Theme.line; opacity: 0.6 }
+
+                                    Rectangle {
+                                        Layout.fillWidth: true; height: 30; radius: 6
+                                        color: addNewMa.containsMouse ? Theme.primarySoft : "transparent"
+                                        Behavior on color { ColorAnimation { duration: 100 } }
+                                        RowLayout {
+                                            anchors { fill: parent; leftMargin: 10; rightMargin: 8 }
+                                            Text {
+                                                text: "+ 新建策略"
+                                                color: Theme.primary; font.pixelSize: 12
+                                                font.weight: Font.DemiBold
+                                            }
+                                        }
+                                        MouseArea {
+                                            id: addNewMa
+                                            anchors.fill: parent; hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                strategy.newStrategy()
+                                                stratNameInput.text = strategy.strategyName
+                                                stratNameInput.forceActiveFocus()
+                                                stratNameInput.selectAll()
+                                                stratPickerPopup.close()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         SgLabel { text: "类型" }
@@ -1154,7 +1249,7 @@ Item {
                                 Text { anchors.centerIn: parent; text: "AI"; color: Theme.primary; font.pixelSize: 18; font.weight: Font.Bold }
                             }
                             Text { Layout.alignment: Qt.AlignHCenter; text: "正在生成策略代码..."; color: Theme.text; font.pixelSize: 14; font.weight: Font.DemiBold }
-                            Text { Layout.alignment: Qt.AlignHCenter; text: "Claude Sonnet 4.6 · Mock 模式"; color: Theme.muted; font.pixelSize: 11 }
+                            Text { Layout.alignment: Qt.AlignHCenter; text: "AI 策略助手"; color: Theme.muted; font.pixelSize: 11 }
                         }
                     }
                 }

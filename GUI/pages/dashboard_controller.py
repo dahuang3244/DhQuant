@@ -14,8 +14,8 @@ class DashboardController(QObject):
         super().__init__()
         self._page = Page.WATCHLIST.value
         self._runtime = RuntimeState.STOPPED.value
-        self._run_id = "paper-20260503-001"
-        self._connection = "mock"
+        self._run_id = ""
+        self._connection = ""
         self._toast_title = ""
         self._toast_message = ""
         self._toast_visible = False
@@ -61,7 +61,6 @@ class DashboardController(QObject):
             return
         self._runtime = RuntimeState.RUNNING.value
         self.runtimeChanged.emit()
-        self.showToast("Runtime Started", "Mock runtime is now running")
 
     @Slot()
     def stopRuntime(self) -> None:
@@ -69,7 +68,6 @@ class DashboardController(QObject):
             return
         self._runtime = RuntimeState.STOPPED.value
         self.runtimeChanged.emit()
-        self.showToast("Runtime Stopped", "Mock runtime has been stopped")
 
     @Slot(str, str)
     def showToast(self, title: str, message: str) -> None:

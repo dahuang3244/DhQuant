@@ -466,7 +466,7 @@ Item {
                                         Rectangle {
                                             implicitWidth: _noteText.implicitWidth + 16; implicitHeight: 22; radius: 11
                                             color: Theme.panel3; border.color: Theme.border; opacity: 0.85
-                                            Text { id: _noteText; anchors.centerIn: parent; text: "各策略等权平均（模拟）"; color: Theme.faint; font.pixelSize: 9 }
+                                            Text { id: _noteText; anchors.centerIn: parent; text: "各策略等权平均"; color: Theme.faint; font.pixelSize: 9 }
                                         }
                                     }
 

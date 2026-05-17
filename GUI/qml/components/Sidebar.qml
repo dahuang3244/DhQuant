@@ -30,7 +30,8 @@ Rectangle {
             "backtest":  "回测工作台",
             "risk":      "风控中心",
             "agent":     "AI 决策台",
-            "journal":   "交易日志"
+            "journal":   "交易日志",
+            "settings":  "系统设置"
         }
         return labels[value] || "未知页面"
     }
@@ -44,7 +45,8 @@ Rectangle {
             "backtest":  "",
             "risk":      "",
             "agent":     "",
-            "journal":   ""
+            "journal":   "",
+            "settings":  ""
         }
         return icons[value] || ""
     }
@@ -272,5 +274,63 @@ Rectangle {
         }
 
         Item { Layout.fillHeight: true }
+
+        Rectangle {
+            Layout.fillWidth: true
+            height: 1; color: Theme.line; opacity: 0.7
+        }
+
+        // Settings — bottom-pinned nav item
+        Button {
+            id: settingsBtn
+            Layout.fillWidth: true
+            Layout.preferredHeight: 44
+            text: "系统设置"
+            flat: true
+            onClicked: root.navigate("settings")
+            scale: pressed ? 0.98 : 1
+            Behavior on scale { NumberAnimation { duration: 110; easing.type: Easing.OutCubic } }
+
+            contentItem: Item {
+                Text {
+                    anchors.fill: parent
+                    text: "系统设置"
+                    font.pixelSize: 15
+                    color: root.page === "settings" ? Theme.text : Theme.muted
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    leftPadding: 14
+                    opacity: Math.max(0, 1 - root.collapseProgress * 1.5)
+                }
+                Text {
+                    anchors.centerIn: parent; width: parent.width
+                    text: root.iconFor("settings")
+                    font.family: iconFont.name; font.pixelSize: 24
+                    color: root.page === "settings" ? Theme.text : Theme.muted
+                    horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
+                    opacity: Math.max(0, (root.collapseProgress - 0.25) / 0.75)
+                }
+            }
+
+            background: Rectangle {
+                readonly property bool selected: root.page === "settings"
+                x: selected ? -6 : 0
+                width: parent.width + (selected ? 6 : 0)
+                height: parent.height; radius: 12
+                color: selected ? Theme.panel3 : settingsBtn.hovered ? Theme.panel2 : "transparent"
+                border.color: selected ? Theme.primary : "transparent"
+                Behavior on x            { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                Behavior on color        { ColorAnimation  { duration: 160 } }
+                Behavior on border.color { ColorAnimation  { duration: 160 } }
+
+                Rectangle {
+                    width: 3; height: 22; radius: 2
+                    anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter
+                    color: Theme.primary
+                    opacity: root.page === "settings" ? 1 : 0
+                    Behavior on opacity { NumberAnimation { duration: 160 } }
+                }
+            }
+        }
     }
 }

@@ -9,12 +9,12 @@ Item {
     id: root
 
     // ── connection / account state ───────────────────────────────────────
-    property bool   connected:   true
+    property bool   connected:   false
     property string broker:      "ChinaBroker"
     property string accountId:   "DQ-001"
-    property bool   autoTrading: true
+    property bool   autoTrading: false
     property bool   riskLocked:  false
-    property string selectedStrategy: "MACD金叉-做多策略"
+    property string selectedStrategy: ""
     property string executionMode: "自动调仓"
 
     // ── auto-rebalance timer state ───────────────────────────────────────
@@ -45,11 +45,11 @@ Item {
     }
 
     // ── account summary ──────────────────────────────────────────────────
-    property real equity:        1234567.89
-    property real available:      456789.12
-    property real unrealizedPnl:   23456.78
-    property real dailyPnl:         8234.56
-    property real marginRatio:        62.9
+    property real equity:        0
+    property real available:     0
+    property real unrealizedPnl: 0
+    property real dailyPnl:      0
+    property real marginRatio:   0
 
     // ── order form state ─────────────────────────────────────────────────
     property string orderSide:   "buy"
@@ -66,52 +66,29 @@ Item {
     // ── positions ────────────────────────────────────────────────────────
     ListModel {
         id: positionsModel
-        ListElement { symbol: "600036"; name: "招商银行"; direction: "多"; qty: 1000; cost: 41.23; price: 43.56; pnl: 2330;  pnlPct: 5.65 }
-        ListElement { symbol: "000858"; name: "五粮液";   direction: "多"; qty:  500; cost: 168.90; price: 172.45; pnl: 1775; pnlPct: 2.10 }
-        ListElement { symbol: "600519"; name: "贵州茅台"; direction: "多"; qty:  100; cost: 1680.00; price: 1695.30; pnl: 1530; pnlPct: 0.91 }
-        ListElement { symbol: "002475"; name: "立讯精密"; direction: "空"; qty: 2000; cost: 28.56; price: 27.89; pnl: 1340; pnlPct: 2.35 }
     }
 
     // ── active orders ─────────────────────────────────────────────────────
     ListModel {
         id: ordersModel
-        ListElement { orderId: "ORD-2847"; symbol: "600036"; name: "招商银行"; side: "买入"; qty: 500;  price: 43.00;  status: "待成交";  statusDetail: "" }
-        ListElement { orderId: "ORD-2848"; symbol: "000858"; name: "五粮液";   side: "买入"; qty: 200;  price: 170.00; status: "部分成交"; statusDetail: "100/200" }
-        ListElement { orderId: "ORD-2849"; symbol: "002475"; name: "立讯精密"; side: "卖出"; qty: 1000; price: 27.50;  status: "待成交";  statusDetail: "" }
     }
 
     // ── trade history ─────────────────────────────────────────────────────
     ListModel {
         id: historyModel
-        ListElement { time: "10:23:45"; symbol: "600036"; name: "招商银行"; side: "买入"; qty: 500;  fillPrice: 43.12;   amount: 21560  }
-        ListElement { time: "09:45:12"; symbol: "000858"; name: "五粮液";   side: "买入"; qty: 300;  fillPrice: 169.50;  amount: 50850  }
-        ListElement { time: "09:31:08"; symbol: "600519"; name: "贵州茅台"; side: "买入"; qty: 100;  fillPrice: 1685.00; amount: 168500 }
-        ListElement { time: "09:30:55"; symbol: "002475"; name: "立讯精密"; side: "卖出"; qty: 1000; fillPrice: 28.45;   amount: 28450  }
-        ListElement { time: "昨日";     symbol: "002475"; name: "立讯精密"; side: "卖出"; qty: 500;  fillPrice: 28.90;   amount: 14450  }
     }
 
     // ── automated strategy state ─────────────────────────────────────────
     ListModel {
         id: signalModel
-        ListElement { symbol: "600036"; name: "招商银行"; signal: "加仓"; score: 0.84; targetWeight: 12.0; currentWeight: 8.5; reason: "趋势延续 / 量能确认" }
-        ListElement { symbol: "600519"; name: "贵州茅台"; signal: "持有"; score: 0.71; targetWeight: 9.0;  currentWeight: 9.2; reason: "动量稳定 / 波动可控" }
-        ListElement { symbol: "002475"; name: "立讯精密"; signal: "减仓"; score: 0.32; targetWeight: 3.0;  currentWeight: 7.4; reason: "短期动量转弱" }
-        ListElement { symbol: "000858"; name: "五粮液";   signal: "观察"; score: 0.55; targetWeight: 6.0;  currentWeight: 5.8; reason: "等待突破确认" }
     }
 
     ListModel {
         id: riskModel
-        ListElement { label: "账户连接"; status: "通过"; detail: "行情与交易通道在线" }
-        ListElement { label: "单票权重"; status: "通过"; detail: "最大目标权重 12.0%" }
-        ListElement { label: "回撤限制"; status: "通过"; detail: "日内回撤 0.7% / 阈值 3.0%" }
-        ListElement { label: "订单重复"; status: "通过"; detail: "无重复挂单" }
     }
 
     ListModel {
         id: automationLogModel
-        ListElement { time: "14:30:02"; level: "INFO"; message: "策略信号刷新完成，生成 3 条调仓建议" }
-        ListElement { time: "14:30:03"; level: "RISK"; message: "风控检查通过，允许自动执行" }
-        ListElement { time: "14:30:05"; level: "EXEC"; message: "自动调仓已启动，定时器运行中" }
     }
 
     // ── helpers ───────────────────────────────────────────────────────────
@@ -137,10 +114,6 @@ Item {
 
     function executeAutoRebalance() {
         if (!connected || !autoTrading || riskLocked) return
-        var t = nowTimeStr()
-        ordersModel.append({ orderId: "AUTO-"+(7300+ordersModel.count), symbol: "600036", name: "招商银行", side: "买入",  qty: 800,  price: 43.20, status: "待成交", statusDetail: "策略调仓" })
-        ordersModel.append({ orderId: "AUTO-"+(7301+ordersModel.count), symbol: "002475", name: "立讯精密", side: "卖出",  qty: 1200, price: 27.80, status: "待成交", statusDetail: "策略调仓" })
-        automationLogModel.insert(0, { time: t, level: "EXEC", message: "已根据目标仓位生成自动委托（第 " + rebalanceCycle + " 轮）" })
     }
 
     // ── page-level state ─────────────────────────────────────────────────
@@ -194,11 +167,11 @@ Item {
                 }
                 Column { spacing: 3; Layout.alignment: Qt.AlignVCenter
                     Text { text: "BROKER"; color: Theme.faint; font.pixelSize: 9; font.letterSpacing: 1.0 }
-                    DarkComboBox { width: 118; height: 30; model: ["ChinaBroker","CryptoGateway","UsBroker","Mock"]; currentIndex: model.indexOf(root.broker); onActivated: root.broker = currentText }
+                    DarkComboBox { width: 118; height: 30; model: ["ChinaBroker","CryptoGateway","UsBroker"]; currentIndex: model.indexOf(root.broker); onActivated: root.broker = currentText }
                 }
                 Column { spacing: 3; Layout.alignment: Qt.AlignVCenter
                     Text { text: "ACCOUNT"; color: Theme.faint; font.pixelSize: 9; font.letterSpacing: 1.0 }
-                    DarkComboBox { width: 100; height: 30; model: ["DQ-001","DQ-002","模拟账户"]; currentIndex: model.indexOf(root.accountId); onActivated: root.accountId = currentText }
+                    DarkComboBox { width: 100; height: 30; model: ["DQ-001","DQ-002"]; currentIndex: model.indexOf(root.accountId); onActivated: root.accountId = currentText }
                 }
 
                 Item { Layout.fillWidth: true }

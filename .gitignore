@@ -5,3 +5,8 @@
 /bd.sh
 /run.sh
 /scripts
+
+# Python cache
+**/__pycache__/
+*.py[cod]
+*$py.class

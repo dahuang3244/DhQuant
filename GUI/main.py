@@ -7,6 +7,7 @@ from pathlib import Path
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QFont, QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtQuick import QQuickWindow
 
 from pages.backtest_controller import BacktestController
 from pages.dashboard_controller import DashboardController
@@ -24,6 +25,8 @@ def qml_root() -> Path:
 def main() -> int:
     os.environ.setdefault("QT_QUICK_CONTROLS_STYLE", "Basic")
 
+    QQuickWindow.setDefaultAlphaBuffer(True)
+
     app = QGuiApplication(sys.argv)
     app.setOrganizationName("DhQuant")
     app.setApplicationName("DhQuant")
@@ -36,7 +39,6 @@ def main() -> int:
 
     dashboard = DashboardController()
     watchlist = WatchlistController()
-    watchlist.search()
     strategy  = StrategyController()
     backtest  = BacktestController(strategy_ctrl=strategy)
     risk      = RiskController()
