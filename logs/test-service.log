@@ -1,0 +1,9 @@
+2026-05-17 10:30:04,409 - my_module - INFO - [2m2026-05-17T02:30:04.408664Z[0m [[32m[1minfo     [0m] [1mhello                         [0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+2026-05-17 10:30:07,191 - my_module - INFO - [2m2026-05-17T02:30:07.191292Z[0m [[32m[1minfo     [0m] [1mhello                         [0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+[2m2026-05-17 02:31[0m [[32m[1minfo     [0m] [1mhello                         [0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+[2m2026-05-17 02:31[0m [[32m[1minfo     [0m] [1mhello                         [0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+[2m2026-05-17 10:31[0m [[32m[1minfo     [0m] [1mhello[0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+[2m2026-05-17 10:32[0m [[32m[1minfo     [0m] [1mhello[0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+[2m2026-05-17 10:32[0m [[32m[1minfo     [0m] [1mhello[0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+[2m2026-05-17 10:32[0m [[32m[1minfo[0m] [1mhello[0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m
+[2m2026-05-17 10:32[0m [[32m[1minfo[0m] [1mhello[0m [[0m[1m[34mmy_module[0m][0m [36maction[0m=[35mstartup[0m [36mservice[0m=[35mtest-service[0m [36mstatus[0m=[35mok[0m

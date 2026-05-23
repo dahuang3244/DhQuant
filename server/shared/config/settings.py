@@ -49,4 +49,3 @@ def get_settings() -> Settings:
     )
 
 
-
