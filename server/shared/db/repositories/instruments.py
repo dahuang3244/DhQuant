@@ -17,6 +17,37 @@ class InstrumentRepository(BaseRepository[Instrument]):
         stmt = select(Instrument).where(Instrument.symbol == symbol)
         return self.session.scalar(stmt)
 
+    def get_or_create_by_symbol(self, symbol: str) -> Instrument:
+        inst = self.get_by_symbol(symbol)
+        if inst:
+            return inst
+        # Try normalized lookup (e.g. SZ.000001 -> 000001.SZ)
+        normalized = symbol
+        if "." in symbol:
+            parts = symbol.split(".")
+            if len(parts) == 2:
+                if parts[0] in ("SZ", "SH", "SSE", "SZSE"):
+                    exch = "SZ" if parts[0] in ("SZ", "SZSE") else "SH"
+                    normalized = f"{parts[1]}.{exch}"
+                elif parts[1] in ("SZ", "SH", "SSE", "SZSE"):
+                    exch = "SZ" if parts[1] in ("SZ", "SZSE") else "SH"
+                    normalized = f"{parts[0]}.{exch}"
+        inst = self.get_by_symbol(normalized)
+        if inst:
+            return inst
+        
+        # Create fallback instrument
+        parts = normalized.split(".")
+        exch_code = parts[1] if len(parts) == 2 else "SZ"
+        exchange = "SZSE" if exch_code == "SZ" else "SSE"
+        return self.create(
+            symbol=normalized,
+            name=f"Auto-created {normalized}",
+            exchange=exchange,
+            asset_type="stock",
+            is_active=True
+        )
+
     def list_active(
         self,
         *,

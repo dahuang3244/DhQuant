@@ -1,10 +1,10 @@
 # server/apps/broker/runner.py
 from __future__ import annotations
 import asyncio
-import json
 from server.shared.logging.setup import get_logger
 from server.shared.redis.client import get_redis
 from server.shared.redis.keys import broker_status_key
+from server.shared.redis.serialization import to_json
 
 logger = get_logger("broker.runner")
 
@@ -28,7 +28,7 @@ async def run_broker_loop(stop_event: asyncio.Event):
             }
             
             # 写入 Redis 缓存柜台连接状态
-            r.set(broker_status_key(broker_id), json.dumps(broker_status), ex=60)
+            r.set(broker_status_key(broker_id), to_json(broker_status), ex=60)
             logger.debug(f"Updated broker status for {broker_id} in Redis.")
 
         except Exception as e:

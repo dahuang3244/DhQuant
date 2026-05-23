@@ -1,10 +1,10 @@
 # server/apps/risk/runner.py
 from __future__ import annotations
 import asyncio
-import json
 from server.shared.logging.setup import get_logger
 from server.shared.redis.client import get_redis
 from server.shared.redis.keys import RISK_STATUS_KEY
+from server.shared.redis.serialization import to_json
 
 logger = get_logger("risk.runner")
 
@@ -26,7 +26,7 @@ async def run_risk_loop(stop_event: asyncio.Event):
             }
             
             # 写入 Redis 全局状态缓存
-            r.set(RISK_STATUS_KEY, json.dumps(risk_status), ex=60)
+            r.set(RISK_STATUS_KEY, to_json(risk_status), ex=60)
             logger.debug("Updated risk status in Redis.")
 
         except Exception as e:

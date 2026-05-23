@@ -47,49 +47,49 @@ def get_redis_client() -> redis.Redis:
 
 # ── 领域服务单例/实例依赖注入 ──────────────────────────────────────────────────
 
-def get_runtime_service() -> RuntimeService:
-    return RuntimeService()
+def get_runtime_service(db: Session = Depends(get_db)) -> RuntimeService:
+    return RuntimeService(db)
 
 
-def get_market_service() -> MarketDataService:
-    return MarketDataService()
+def get_market_service(db: Session = Depends(get_db)) -> MarketDataService:
+    return MarketDataService(db)
 
 
-def get_news_service() -> NewsService:
-    return NewsService()
+def get_news_service(db: Session = Depends(get_db)) -> NewsService:
+    return NewsService(db)
 
 
-def get_ai_service() -> AiService:
-    return AiService()
+def get_ai_service(db: Session = Depends(get_db)) -> AiService:
+    return AiService(db)
 
 
-def get_strategy_service() -> StrategyService:
-    return StrategyService()
+def get_strategy_service(db: Session = Depends(get_db)) -> StrategyService:
+    return StrategyService(db)
 
 
-def get_factor_service() -> FactorService:
-    return FactorService()
+def get_factor_service(db: Session = Depends(get_db)) -> FactorService:
+    return FactorService(db)
 
 
-def get_backtest_service() -> BacktestService:
-    return BacktestService()
+def get_backtest_service(db: Session = Depends(get_db)) -> BacktestService:
+    return BacktestService(db)
 
 
-def get_risk_service() -> RiskService:
-    return RiskService()
+def get_risk_service(db: Session = Depends(get_db)) -> RiskService:
+    return RiskService(db)
 
 
-def get_broker_service() -> BrokerService:
-    return BrokerService()
+def get_broker_service(db: Session = Depends(get_db)) -> BrokerService:
+    return BrokerService(db)
 
 
-def get_settings_service() -> SettingsService:
-    return SettingsService()
+def get_settings_service(db: Session = Depends(get_db)) -> SettingsService:
+    return SettingsService(db)
 
 
-def get_event_service() -> EventService:
-    return EventService()
+def get_event_service(db: Session = Depends(get_db)) -> EventService:
+    return EventService(db)
 
 
-def get_scheduler_service() -> SchedulerService:
-    return SchedulerService()
+def get_scheduler_service(db: Session = Depends(get_db)) -> SchedulerService:
+    return SchedulerService(db)

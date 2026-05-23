@@ -2,6 +2,7 @@
 from __future__ import annotations
 from datetime import datetime
 import os
+from sqlalchemy.orm import Session
 from server.shared.schemas.runtime import RuntimeStatusDTO, HealthReportDTO, ServiceInfoDTO
 from server.shared.redis.heartbeat import get_service_status, read_heartbeat
 from server.shared.redis.client import ping_redis
@@ -13,7 +14,8 @@ except ImportError:
     psutil = None
 
 class RuntimeService:
-    def __init__(self):
+    def __init__(self, db: Session | None = None):
+        self.db = db
         self.start_time = datetime.now()
 
     def get_status(self) -> RuntimeStatusDTO:
