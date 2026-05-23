@@ -1,0 +1,4 @@
+2026-05-23 10:49:21 [INFO] main.py:28: main(): Initializing Risk Control Service... level='info' service='risk'
+2026-05-23 10:49:21 [INFO] runner.py:14: run_risk_loop(): Starting Risk monitoring loop... level='info' service='risk'
+2026-05-23 10:49:47 [INFO] main.py:39: handle_exit(): Received stop signal, shutting down risk service... level='info' service='risk'
+2026-05-23 10:49:51 [INFO] main.py:54: main(): Risk Control Service stopped. level='info' service='risk'

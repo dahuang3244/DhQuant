@@ -1,0 +1,13 @@
+[2026-05-23 10:49:22,617] [PID 99545] [MainThread] [dramatiq.MainProcess] [INFO] Dramatiq '2.1.0' is booting up.
+[2026-05-23 10:49:22,611] [PID 99558] [MainThread] [news.main] [INFO] 2026-05-23 10:49:22 [INFO] main.py:28: <module>(): Initializing News Service Dramatiq Worker... level='info' service='news'
+[2026-05-23 10:49:22,617] [PID 99558] [MainThread] [dramatiq.WorkerProcess(0)] [INFO] Worker process is ready for action.
+[2026-05-23 10:49:22,619] [PID 99558] [Thread-4] [news.runner] [INFO] 2026-05-23 10:49:22 [INFO] runner.py:20: fetch_news_task(): Executing fetch_news_task for source=eastmoney, limit=10... level='info'
+[2026-05-23 10:49:23,625] [PID 99558] [Thread-4] [news.runner] [INFO] 2026-05-23 10:49:23 [INFO] runner.py:26: fetch_news_task(): Successfully processed fetch_news_task for source=eastmoney. level='info'
+[2026-05-23 10:49:32,164] [PID 99558] [Thread-6] [news.runner] [INFO] 2026-05-23 10:49:32 [INFO] runner.py:20: fetch_news_task(): Executing fetch_news_task for source=eastmoney, limit=10... level='info'
+[2026-05-23 10:49:33,170] [PID 99558] [Thread-6] [news.runner] [INFO] 2026-05-23 10:49:33 [INFO] runner.py:26: fetch_news_task(): Successfully processed fetch_news_task for source=eastmoney. level='info'
+[2026-05-23 10:49:42,164] [PID 99558] [Thread-6] [news.runner] [INFO] 2026-05-23 10:49:42 [INFO] runner.py:20: fetch_news_task(): Executing fetch_news_task for source=eastmoney, limit=10... level='info'
+[2026-05-23 10:49:43,168] [PID 99558] [Thread-6] [news.runner] [INFO] 2026-05-23 10:49:43 [INFO] runner.py:26: fetch_news_task(): Successfully processed fetch_news_task for source=eastmoney. level='info'
+[2026-05-23 10:49:47,973] [PID 99545] [MainThread] [dramatiq.MainProcess] [INFO] Sending signal 'SIGTERM' to subprocesses...
+[2026-05-23 10:49:47,973] [PID 99558] [MainThread] [dramatiq.WorkerProcess(0)] [INFO] Stopping worker process...
+[2026-05-23 10:49:48,704] [PID 99558] [MainThread] [dramatiq.worker.Worker] [INFO] Shutting down...
+[2026-05-23 10:49:50,187] [PID 99558] [MainThread] [dramatiq.worker.Worker] [INFO] Worker has been shut down.

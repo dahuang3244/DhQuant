@@ -1,0 +1,15 @@
+INFO:     Will watch for changes in these directories: ['/Users/dahuang/Desktop/项目/量化/DhQuant']
+INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+INFO:     Started reloader process [99543] using WatchFiles
+INFO:     Started server process [99556]
+INFO:     Waiting for application startup.
+2026-05-23 10:49:25 [INFO] main.py:36: lifespan(): Starting DhQuant API Server... level='info' service='api'
+INFO:     Application startup complete.
+3 changes detected
+1 change detected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-05-23 10:49:48 [INFO] main.py:46: lifespan(): Shutting down DhQuant API Server... level='info' service='api'
+INFO:     Application shutdown complete.
+INFO:     Finished server process [99556]
+INFO:     Stopping reloader process [99543]

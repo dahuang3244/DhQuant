@@ -1,0 +1,9 @@
+[2026-05-23 10:49:22,633] [PID 99546] [MainThread] [dramatiq.MainProcess] [INFO] Dramatiq '2.1.0' is booting up.
+[2026-05-23 10:49:22,620] [PID 99559] [MainThread] [ai.main] [INFO] 2026-05-23 10:49:22 [INFO] main.py:28: <module>(): Initializing AI Service Dramatiq Worker... level='info' service='ai'
+[2026-05-23 10:49:22,633] [PID 99559] [Thread-6] [ai.runner] [INFO] 2026-05-23 10:49:22 [INFO] runner.py:32: ai_signal_scan_task(): Executing ai_signal_scan_task for instrument_id=SZ.000001... level='info'
+[2026-05-23 10:49:22,633] [PID 99559] [MainThread] [dramatiq.WorkerProcess(0)] [INFO] Worker process is ready for action.
+[2026-05-23 10:49:23,639] [PID 99559] [Thread-6] [ai.runner] [INFO] 2026-05-23 10:49:23 [INFO] runner.py:37: ai_signal_scan_task(): Successfully processed ai_signal_scan_task for instrument_id=SZ.000001. level='info'
+[2026-05-23 10:49:47,973] [PID 99546] [MainThread] [dramatiq.MainProcess] [INFO] Sending signal 'SIGTERM' to subprocesses...
+[2026-05-23 10:49:47,973] [PID 99559] [MainThread] [dramatiq.WorkerProcess(0)] [INFO] Stopping worker process...
+[2026-05-23 10:49:48,713] [PID 99559] [MainThread] [dramatiq.worker.Worker] [INFO] Shutting down...
+[2026-05-23 10:49:50,476] [PID 99559] [MainThread] [dramatiq.worker.Worker] [INFO] Worker has been shut down.

@@ -1,0 +1,4 @@
+2026-05-23 10:49:21 [INFO] main.py:28: main(): Initializing Market Data Service... level='info' service='market'
+2026-05-23 10:49:21 [INFO] runner.py:14: run_market_loop(): Starting Market Data loop... level='info' service='market'
+2026-05-23 10:49:47 [INFO] main.py:40: handle_exit(): Received stop signal, shutting down market service... level='info' service='market'
+2026-05-23 10:49:49 [INFO] main.py:56: main(): Market Data Service stopped. level='info' service='market'

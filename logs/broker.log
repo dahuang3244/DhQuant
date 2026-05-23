@@ -1,0 +1,4 @@
+2026-05-23 10:49:21 [INFO] main.py:28: main(): Initializing Broker Gateway Service... level='info' service='broker'
+2026-05-23 10:49:21 [INFO] runner.py:14: run_broker_loop(): Starting Broker synchronization loop... level='info' service='broker'
+2026-05-23 10:49:47 [INFO] main.py:39: handle_exit(): Received stop signal, shutting down broker service... level='info' service='broker'
+2026-05-23 10:49:51 [INFO] main.py:54: main(): Broker Gateway Service stopped. level='info' service='broker'
